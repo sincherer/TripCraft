@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TripCraft — Travel Planner</title>
+  <meta name="description" content="Plan your perfect trip with maps, itineraries, and budget tracking" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#2563eb" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Leaflet Routing Machine CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Sidebar -->
+    <aside id="sidebar">
+      <div id="sidebar-header">
+        <div id="logo">
+          <span class="logo-icon">✈️</span>
+          <span class="logo-text">TripCraft</span>
+        </div>
+        <button id="new-trip-btn" class="btn btn-primary">+ New Trip</button>
+      </div>
+
+      <div id="trips-list">
+        <div class="section-label">MY TRIPS</div>
+        <div id="trips-container"></div>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main id="main">
+      <!-- Empty state -->
+      <div id="empty-state">
+        <div class="empty-icon">🗺️</div>
+        <h2>Start planning your adventure</h2>
+        <p>Create a new trip to begin building your itinerary</p>
+        <button class="btn btn-primary" onclick="openNewTripModal()">+ Create Trip</button>
+      </div>
+
+      <!-- Trip view (hidden by default) -->
+      <div id="trip-view" class="hidden">
+        <!-- Trip header -->
+        <div id="trip-header">
+          <div id="trip-title-row">
+            <h1 id="trip-name-display"></h1>
+            <div id="trip-meta">
+              <span id="trip-dates-display"></span>
+              <span id="trip-budget-summary"></span>
+            </div>
+          </div>
+
+          <!-- Tab navigation -->
+          <nav id="tab-nav">
+            <button class="tab-btn active" data-tab="itinerary">📋 Itinerary</button>
+            <button class="tab-btn" data-tab="map">🗺️ Map</button>
+            <button class="tab-btn" data-tab="budget">💰 Budget</button>
+            <button class="tab-btn" data-tab="summary">📄 Summary</button>
+          </nav>
+        </div>
+
+        <!-- Itinerary Tab -->
+        <div id="tab-itinerary" class="tab-content active">
+          <div id="days-container"></div>
+          <button id="add-day-btn" class="btn btn-outline">+ Add Day</button>
+        </div>
+
+        <!-- Map Tab -->
+        <div id="tab-map" class="tab-content">
+          <div id="map-controls">
+            <label>
+              <input type="checkbox" id="show-route-toggle" checked />
+              Show route between stops
+            </label>
+          </div>
+          <div id="map"></div>
+        </div>
+
+        <!-- Budget Tab -->
+        <div id="tab-budget" class="tab-content">
+          <div id="budget-overview">
+            <div class="budget-card" id="budget-total-card">
+              <div class="budget-label">Total Estimated</div>
+              <div class="budget-amount" id="budget-total">$0</div>
+            </div>
+            <div class="budget-card" id="budget-per-day-card">
+              <div class="budget-label">Per Day Average</div>
+              <div class="budget-amount" id="budget-per-day">$0</div>
+            </div>
+          </div>
+          <div id="budget-breakdown"></div>
+        </div>
+
+        <!-- Summary Tab -->
+        <div id="tab-summary" class="tab-content">
+          <div id="summary-content"></div>
+          <button class="btn btn-outline" onclick="printSummary()">🖨️ Print / Save as PDF</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- New Trip Modal -->
+  <div id="modal-overlay" class="hidden">
+    <div id="modal" role="dialog" aria-modal="true">
+      <div class="modal-header">
+        <h2 id="modal-title">New Trip</h2>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Leaflet Routing Machine -->
+  <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
+</body>
+</html>
