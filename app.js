@@ -621,20 +621,42 @@ function attachStopEvents(day, di, stop, si) {
       const q = nameInput.value.trim();
       if (!q || q.length < 2) { acDropdown.style.display = 'none'; return; }
       acDropdown.style.display = 'block';
-      acDropdown.innerHTML = '<div class="autocomplete-searching">🔍 Searching…</div>';
+      acDropdown.innerHTML = '<div class="autocomplete-searching"><span style="animation:pulse 1s infinite;display:inline-block">🔍</span> Searching…</div>';
       acTimer = setTimeout(async () => {
         const cc = tripCountryCodes(state.activeTrip);
         const results = await searchPlaces(q, cc);
-        if (!results.length) { acDropdown.style.display = 'none'; return; }
         acFocusIdx = -1;
-        acDropdown.innerHTML = results.map((r, i) => `
+
+        if (!results.length) {
+          acDropdown.innerHTML = `<div class="autocomplete-empty">😕 No places found for "<b>${escHtml(q)}</b>"<br><span style="font-size:11px">Try a different spelling or remove the country filter</span></div>`;
+          return;
+        }
+
+        const countryLabel = cc.length
+          ? `<div class="autocomplete-header">Results in ${(state.activeTrip.countries||[]).map(c=>c.flag+' '+c.name).join(', ')}</div>`
+          : '<div class="autocomplete-header">All countries</div>';
+
+        acDropdown.innerHTML = countryLabel + results.map((r, i) => {
+          // Extract country from display name (last 1-2 parts after last comma)
+          const parts = r.display.split(',').map(s => s.trim());
+          const country = parts[parts.length - 1];
+          const city = parts.length > 2 ? parts[parts.length - 2] : '';
+          const countryFlag = COUNTRIES.find(c => c.name.toLowerCase() === country.toLowerCase())?.flag || '';
+          const shortAddr = parts.slice(1, -1).filter(Boolean).slice(0, 2).join(', ');
+
+          return `
           <div class="autocomplete-item" data-idx="${i}" data-lat="${r.lat}" data-lng="${r.lng}" data-name="${escHtml(r.name)}" data-display="${escHtml(r.display)}">
             <span class="autocomplete-item-icon">${placeIcon(r.category, r.type)}</span>
             <div class="autocomplete-item-text">
-              <div class="autocomplete-item-name">${escHtml(r.name)}</div>
-              <div class="autocomplete-item-sub">${escHtml(shortAddress(r.display))}</div>
+              <div class="autocomplete-item-name">
+                ${escHtml(r.name)}
+                <span class="autocomplete-item-country">${countryFlag} ${escHtml(country)}</span>
+              </div>
+              ${shortAddr ? `<div class="autocomplete-item-sub">${escHtml(shortAddr)}</div>` : ''}
             </div>
-          </div>`).join('');
+          </div>`;
+        }).join('');
+
         acDropdown.querySelectorAll('.autocomplete-item').forEach(item => {
           item.addEventListener('mousedown', e => {
             e.preventDefault();

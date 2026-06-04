@@ -292,7 +292,7 @@ body {
 .stop-dot.transport { border-color: #0891b2; }
 .stop-dot.other  { border-color: var(--gray-400); }
 
-/* Stop card */
+/* Stop card — NO overflow:hidden so autocomplete dropdown can escape */
 .stop-card {
   flex: 1;
   min-width: 0;
@@ -300,11 +300,16 @@ body {
   background: #fff;
   border: 1.5px solid var(--gray-200);
   border-radius: 10px;
-  overflow: hidden;
   transition: border-color .15s, box-shadow .15s;
+  /* inner elements carry their own border-radius for visual cleanliness */
 }
 .stop-card:hover { border-color: #93c5fd; box-shadow: 0 2px 8px rgba(37,99,235,.08); }
 .stop-card:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
+
+/* Round top corners of the very first child so the card still looks clean */
+.stop-card-top { border-radius: 9px 9px 0 0; overflow: hidden; }
+.mini-map-wrap  { overflow: hidden; }
+.stop-details   { border-radius: 0 0 9px 9px; overflow: hidden; }
 
 /* Coloured left accent by type */
 .stop-card { border-left-width: 4px; }
@@ -673,42 +678,90 @@ body {
   flex: 1;
   min-width: 0;
 }
+.stop-name-wrap { overflow: visible !important; }
+
 .autocomplete-dropdown {
   position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-  right: 0;
+  top: calc(100% + 6px);
+  left: -12px;          /* bleed outside the name-wrap to use full card width */
+  right: -80px;
+  min-width: 320px;
   background: #fff;
-  border: 1.5px solid #bfdbfe;
-  border-radius: 10px;
-  box-shadow: 0 8px 24px rgba(0,0,0,.13);
-  z-index: 9000;
+  border: 1.5px solid #93c5fd;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(37,99,235,.18);
+  z-index: 99999;       /* must beat everything */
   overflow: hidden;
-  max-height: 240px;
+  max-height: 280px;
   overflow-y: auto;
 }
 .autocomplete-item {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  padding: 9px 12px;
+  padding: 10px 14px;
   cursor: pointer;
   border-bottom: 1px solid var(--gray-100);
   transition: background .1s;
 }
 .autocomplete-item:last-child { border-bottom: none; }
 .autocomplete-item:hover, .autocomplete-item.focused { background: var(--blue-light); }
-.autocomplete-item-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+.autocomplete-item-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
 .autocomplete-item-text { flex: 1; min-width: 0; }
-.autocomplete-item-name { font-size: 13px; font-weight: 600; color: var(--gray-800); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.autocomplete-item-sub  { font-size: 11px; color: var(--gray-400); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.autocomplete-item-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gray-800);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.autocomplete-item-country {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--blue);
+  background: var(--blue-light);
+  border-radius: 8px;
+  padding: 1px 7px;
+  margin-left: 6px;
+}
+.autocomplete-item-sub {
+  font-size: 11px;
+  color: var(--gray-400);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
 .autocomplete-searching {
-  padding: 10px 14px;
+  padding: 12px 14px;
   font-size: 13px;
   color: var(--gray-400);
   display: flex;
   align-items: center;
   gap: 8px;
+}
+.autocomplete-empty {
+  padding: 14px;
+  font-size: 13px;
+  color: var(--gray-400);
+  text-align: center;
+}
+.autocomplete-header {
+  padding: 6px 14px 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--gray-400);
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  background: var(--gray-50);
+  border-bottom: 1px solid var(--gray-100);
 }
 
 /* ─── Mini map preview inside itinerary ─── */
