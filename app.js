@@ -1,3 +1,65 @@
+// ─── Countries ───────────────────────────────────────────────────────────────
+const COUNTRIES = [
+  {code:'af',name:'Afghanistan',flag:'🇦🇫'},{code:'al',name:'Albania',flag:'🇦🇱'},
+  {code:'dz',name:'Algeria',flag:'🇩🇿'},{code:'ar',name:'Argentina',flag:'🇦🇷'},
+  {code:'au',name:'Australia',flag:'🇦🇺'},{code:'at',name:'Austria',flag:'🇦🇹'},
+  {code:'bh',name:'Bahrain',flag:'🇧🇭'},{code:'bd',name:'Bangladesh',flag:'🇧🇩'},
+  {code:'be',name:'Belgium',flag:'🇧🇪'},{code:'bo',name:'Bolivia',flag:'🇧🇴'},
+  {code:'ba',name:'Bosnia',flag:'🇧🇦'},{code:'br',name:'Brazil',flag:'🇧🇷'},
+  {code:'bn',name:'Brunei',flag:'🇧🇳'},{code:'bg',name:'Bulgaria',flag:'🇧🇬'},
+  {code:'kh',name:'Cambodia',flag:'🇰🇭'},{code:'ca',name:'Canada',flag:'🇨🇦'},
+  {code:'cl',name:'Chile',flag:'🇨🇱'},{code:'cn',name:'China',flag:'🇨🇳'},
+  {code:'co',name:'Colombia',flag:'🇨🇴'},{code:'cr',name:'Costa Rica',flag:'🇨🇷'},
+  {code:'hr',name:'Croatia',flag:'🇭🇷'},{code:'cu',name:'Cuba',flag:'🇨🇺'},
+  {code:'cy',name:'Cyprus',flag:'🇨🇾'},{code:'cz',name:'Czech Republic',flag:'🇨🇿'},
+  {code:'dk',name:'Denmark',flag:'🇩🇰'},{code:'do',name:'Dominican Republic',flag:'🇩🇴'},
+  {code:'ec',name:'Ecuador',flag:'🇪🇨'},{code:'eg',name:'Egypt',flag:'🇪🇬'},
+  {code:'ee',name:'Estonia',flag:'🇪🇪'},{code:'et',name:'Ethiopia',flag:'🇪🇹'},
+  {code:'fi',name:'Finland',flag:'🇫🇮'},{code:'fr',name:'France',flag:'🇫🇷'},
+  {code:'ge',name:'Georgia',flag:'🇬🇪'},{code:'de',name:'Germany',flag:'🇩🇪'},
+  {code:'gh',name:'Ghana',flag:'🇬🇭'},{code:'gr',name:'Greece',flag:'🇬🇷'},
+  {code:'gt',name:'Guatemala',flag:'🇬🇹'},{code:'hn',name:'Honduras',flag:'🇭🇳'},
+  {code:'hk',name:'Hong Kong',flag:'🇭🇰'},{code:'hu',name:'Hungary',flag:'🇭🇺'},
+  {code:'is',name:'Iceland',flag:'🇮🇸'},{code:'in',name:'India',flag:'🇮🇳'},
+  {code:'id',name:'Indonesia',flag:'🇮🇩'},{code:'ir',name:'Iran',flag:'🇮🇷'},
+  {code:'iq',name:'Iraq',flag:'🇮🇶'},{code:'ie',name:'Ireland',flag:'🇮🇪'},
+  {code:'il',name:'Israel',flag:'🇮🇱'},{code:'it',name:'Italy',flag:'🇮🇹'},
+  {code:'jm',name:'Jamaica',flag:'🇯🇲'},{code:'jp',name:'Japan',flag:'🇯🇵'},
+  {code:'jo',name:'Jordan',flag:'🇯🇴'},{code:'kz',name:'Kazakhstan',flag:'🇰🇿'},
+  {code:'ke',name:'Kenya',flag:'🇰🇪'},{code:'kr',name:'South Korea',flag:'🇰🇷'},
+  {code:'kw',name:'Kuwait',flag:'🇰🇼'},{code:'la',name:'Laos',flag:'🇱🇦'},
+  {code:'lv',name:'Latvia',flag:'🇱🇻'},{code:'lb',name:'Lebanon',flag:'🇱🇧'},
+  {code:'ly',name:'Libya',flag:'🇱🇾'},{code:'lt',name:'Lithuania',flag:'🇱🇹'},
+  {code:'lu',name:'Luxembourg',flag:'🇱🇺'},{code:'mo',name:'Macau',flag:'🇲🇴'},
+  {code:'my',name:'Malaysia',flag:'🇲🇾'},{code:'mv',name:'Maldives',flag:'🇲🇻'},
+  {code:'mt',name:'Malta',flag:'🇲🇹'},{code:'mx',name:'Mexico',flag:'🇲🇽'},
+  {code:'md',name:'Moldova',flag:'🇲🇩'},{code:'mn',name:'Mongolia',flag:'🇲🇳'},
+  {code:'ma',name:'Morocco',flag:'🇲🇦'},{code:'mm',name:'Myanmar',flag:'🇲🇲'},
+  {code:'np',name:'Nepal',flag:'🇳🇵'},{code:'nl',name:'Netherlands',flag:'🇳🇱'},
+  {code:'nz',name:'New Zealand',flag:'🇳🇿'},{code:'ni',name:'Nicaragua',flag:'🇳🇮'},
+  {code:'ng',name:'Nigeria',flag:'🇳🇬'},{code:'no',name:'Norway',flag:'🇳🇴'},
+  {code:'om',name:'Oman',flag:'🇴🇲'},{code:'pk',name:'Pakistan',flag:'🇵🇰'},
+  {code:'pa',name:'Panama',flag:'🇵🇦'},{code:'py',name:'Paraguay',flag:'🇵🇾'},
+  {code:'pe',name:'Peru',flag:'🇵🇪'},{code:'ph',name:'Philippines',flag:'🇵🇭'},
+  {code:'pl',name:'Poland',flag:'🇵🇱'},{code:'pt',name:'Portugal',flag:'🇵🇹'},
+  {code:'qa',name:'Qatar',flag:'🇶🇦'},{code:'ro',name:'Romania',flag:'🇷🇴'},
+  {code:'ru',name:'Russia',flag:'🇷🇺'},{code:'sa',name:'Saudi Arabia',flag:'🇸🇦'},
+  {code:'rs',name:'Serbia',flag:'🇷🇸'},{code:'sg',name:'Singapore',flag:'🇸🇬'},
+  {code:'sk',name:'Slovakia',flag:'🇸🇰'},{code:'si',name:'Slovenia',flag:'🇸🇮'},
+  {code:'za',name:'South Africa',flag:'🇿🇦'},{code:'es',name:'Spain',flag:'🇪🇸'},
+  {code:'lk',name:'Sri Lanka',flag:'🇱🇰'},{code:'se',name:'Sweden',flag:'🇸🇪'},
+  {code:'ch',name:'Switzerland',flag:'🇨🇭'},{code:'tw',name:'Taiwan',flag:'🇹🇼'},
+  {code:'tz',name:'Tanzania',flag:'🇹🇿'},{code:'th',name:'Thailand',flag:'🇹🇭'},
+  {code:'tn',name:'Tunisia',flag:'🇹🇳'},{code:'tr',name:'Turkey',flag:'🇹🇷'},
+  {code:'ae',name:'United Arab Emirates',flag:'🇦🇪'},{code:'gb',name:'United Kingdom',flag:'🇬🇧'},
+  {code:'us',name:'United States',flag:'🇺🇸'},{code:'uy',name:'Uruguay',flag:'🇺🇾'},
+  {code:'uz',name:'Uzbekistan',flag:'🇺🇿'},{code:'ve',name:'Venezuela',flag:'🇻🇪'},
+  {code:'vn',name:'Vietnam',flag:'🇻🇳'},{code:'ye',name:'Yemen',flag:'🇾🇪'},
+].sort((a,b) => a.name.localeCompare(b.name));
+
+function getCountry(code) { return COUNTRIES.find(c => c.code === code); }
+function tripCountryCodes(trip) { return (trip.countries || []).map(c => c.code); }
+
 // ─── State ───────────────────────────────────────────────────────────────────
 let state = {
   trips: [],
@@ -49,19 +111,40 @@ function tripDateRange(trip) {
 // ─── Geocoding (Nominatim) ────────────────────────────────────────────────────
 const geocodeCache = {};
 
-async function geocode(name) {
-  if (geocodeCache[name]) return geocodeCache[name];
+async function geocode(name, countryCodes = []) {
+  const key = name + '|' + countryCodes.join(',');
+  if (geocodeCache[key]) return geocodeCache[key];
   try {
-    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(name)}&format=json&limit=1`;
+    const cc = countryCodes.length ? `&countrycodes=${countryCodes.join(',')}` : '';
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(name)}&format=json&limit=1&addressdetails=1${cc}`;
     const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
     const data = await res.json();
     if (data && data[0]) {
       const result = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon), display: data[0].display_name };
-      geocodeCache[name] = result;
+      geocodeCache[key] = result;
       return result;
     }
   } catch {}
   return null;
+}
+
+// Autocomplete search — returns up to 5 results
+async function searchPlaces(query, countryCodes = []) {
+  if (!query || query.length < 2) return [];
+  try {
+    const cc = countryCodes.length ? `&countrycodes=${countryCodes.join(',')}` : '';
+    const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5&addressdetails=1${cc}`;
+    const res = await fetch(url, { headers: { 'Accept-Language': 'en' } });
+    const data = await res.json();
+    return data.map(d => ({
+      name: d.name || d.display_name.split(',')[0],
+      display: d.display_name,
+      lat: parseFloat(d.lat),
+      lng: parseFloat(d.lon),
+      type: d.type,
+      category: d.class,
+    }));
+  } catch { return []; }
 }
 
 // ─── Travel Time (OSRM public API) ───────────────────────────────────────────
@@ -94,13 +177,34 @@ let mapInstance = null;
 let routeControl = null;
 let mapMarkers = [];
 
+const TILE_URL = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+const TILE_ATTR = '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>';
+
 function initMap() {
   if (mapInstance) return;
   mapInstance = L.map('map').setView([20, 0], 2);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    maxZoom: 19,
-  }).addTo(mapInstance);
+  L.tileLayer(TILE_URL, { attribution: TILE_ATTR, maxZoom: 19 }).addTo(mapInstance);
+}
+
+// Mini-maps keyed by stop id
+const miniMaps = {};
+
+function initMiniMap(stopId, lat, lng) {
+  const container = document.getElementById(`mini-map-${stopId}`);
+  if (!container) return;
+  container.classList.add('visible');
+
+  if (miniMaps[stopId]) {
+    miniMaps[stopId].setView([lat, lng], 14);
+    miniMaps[stopId]._pin?.setLatLng([lat, lng]);
+    return;
+  }
+  const m = L.map(container, { zoomControl: false, attributionControl: false, dragging: false, scrollWheelZoom: false });
+  L.tileLayer(TILE_URL, { maxZoom: 19 }).addTo(m);
+  m.setView([lat, lng], 14);
+  const pin = L.marker([lat, lng]).addTo(m);
+  m._pin = pin;
+  miniMaps[stopId] = m;
 }
 
 async function refreshMap() {
@@ -120,9 +224,11 @@ async function refreshMap() {
 
   if (!allStops.length) return;
 
-  // Geocode all stops
+  // Geocode all stops (use stored coords if available, else geocode with country filter)
+  const cc = tripCountryCodes(trip);
   const geocoded = await Promise.all(allStops.map(async s => {
-    const geo = await geocode(s.name);
+    if (s.lat && s.lng) return s;
+    const geo = await geocode(s.name, cc);
     return geo ? { ...s, lat: geo.lat, lng: geo.lng } : null;
   }));
   const valid = geocoded.filter(Boolean);
@@ -200,7 +306,7 @@ function renderSidebar() {
     <div class="trip-item ${state.activeTrip?.id === trip.id ? 'active' : ''}" onclick="selectTrip('${trip.id}')">
       <div class="trip-item-left">
         <div class="trip-item-name">${trip.name || 'Unnamed Trip'}</div>
-        <div class="trip-item-dates">${tripDateRange(trip) || `${trip.days.length} day${trip.days.length !== 1 ? 's' : ''}`}</div>
+        <div class="trip-item-dates">${tripDateRange(trip) || `${trip.days.length} day${trip.days.length !== 1 ? 's' : ''}`}${(trip.countries||[]).length ? ' · ' + trip.countries.map(c=>c.flag).join('') : ''}</div>
       </div>
       <button class="trip-delete-btn" onclick="event.stopPropagation();deleteTrip('${trip.id}')" title="Delete trip">🗑</button>
     </div>
@@ -218,7 +324,9 @@ function renderTripView() {
   document.getElementById('trip-view').classList.remove('hidden');
 
   document.getElementById('trip-name-display').textContent = trip.name;
-  document.getElementById('trip-dates-display').textContent = tripDateRange(trip);
+  const countryChips = (trip.countries || []).map(c => `<span class="trip-country-chip">${c.flag} ${c.name}</span>`).join('');
+  document.getElementById('trip-dates-display').innerHTML =
+    (tripDateRange(trip) ? `<span>${tripDateRange(trip)}</span>` : '') + (countryChips ? `<span style="display:flex;gap:4px;flex-wrap:wrap">${countryChips}</span>` : '');
 
   const totalBudget = trip.days.flatMap(d => d.stops).reduce((s, st) => s + (parseFloat(st.cost) || 0), 0);
   document.getElementById('trip-budget-summary').textContent = totalBudget > 0 ? `Est. ${formatCurrency(totalBudget)}` : '';
@@ -313,6 +421,8 @@ function renderStopRow(stop, si, prevStop) {
     `<button class="type-choice-btn ${stop.type === t ? 'selected' : ''}" onclick="changeStopType('${stop.id}','${t}')">${stopTypeIcon(t)} ${t.charAt(0).toUpperCase()+t.slice(1)}</button>`
   ).join('');
 
+  const hasMiniMap = stop.lat && stop.lng;
+
   return `
     ${connector}
     <div class="timeline-row" id="stop-${stop.id}">
@@ -324,13 +434,17 @@ function renderStopRow(stop, si, prevStop) {
       <div class="stop-card ${stop.type}">
         <div class="stop-card-top">
           <span class="stop-type-pill ${stop.type}">${stopTypeIcon(stop.type)} ${stop.type.charAt(0).toUpperCase()+stop.type.slice(1)}</span>
-          <input class="stop-name" placeholder="Place name…" value="${escHtml(stop.name || '')}" data-stop="${stop.id}" data-field="name" />
+          <div class="stop-name-wrap">
+            <input class="stop-name" placeholder="Search a place…" value="${escHtml(stop.name || '')}" data-stop="${stop.id}" data-field="name" autocomplete="off" />
+            <div class="autocomplete-dropdown" id="ac-${stop.id}" style="display:none"></div>
+          </div>
           <div class="stop-card-actions">
             <button class="stop-cost-badge ${costClass}" onclick="toggleStopDetails('${stop.id}')" title="Add cost / notes">${costLabel}</button>
             <button class="stop-expand-btn" onclick="toggleStopDetails('${stop.id}')" title="Expand details" id="expand-${stop.id}">⌄</button>
             <button class="stop-delete-btn" onclick="deleteStop('${stop.id}')" title="Remove">✕</button>
           </div>
         </div>
+        <div id="mini-map-${stop.id}" class="stop-mini-map ${hasMiniMap ? 'visible' : ''}"></div>
         <div class="stop-details ${detailsOpen}" id="details-${stop.id}">
           <div class="stop-detail-row">
             <span class="stop-detail-label">Notes</span>
@@ -348,6 +462,56 @@ function renderStopRow(stop, si, prevStop) {
       </div>
     </div>
   `;
+}
+
+// ─── Place helper functions ───────────────────────────────────────────────────
+function selectPlace(stop, item, nameInput, acDropdown) {
+  const name = item.dataset.name;
+  const lat  = parseFloat(item.dataset.lat);
+  const lng  = parseFloat(item.dataset.lng);
+  nameInput.value = name;
+  stop.name = name;
+  stop.lat  = lat;
+  stop.lng  = lng;
+  saveState();
+  acDropdown.style.display = 'none';
+  // Show mini map
+  const miniMapEl = document.getElementById(`mini-map-${stop.id}`);
+  if (miniMapEl) {
+    miniMapEl.classList.add('visible');
+    setTimeout(() => initMiniMap(stop.id, lat, lng), 60);
+  }
+  // Cache geocode result
+  geocodeCache[name + '|'] = { lat, lng };
+}
+
+function placeIcon(category, type) {
+  if (category === 'amenity') {
+    if (['restaurant','cafe','fast_food','food_court'].includes(type)) return '🍽️';
+    if (['hotel','motel','hostel','guest_house'].includes(type)) return '🏨';
+    if (['museum','theatre','cinema','arts_centre'].includes(type)) return '🏛️';
+    if (['place_of_worship'].includes(type)) return '⛪';
+    if (['hospital','clinic'].includes(type)) return '🏥';
+    if (['airport'].includes(type)) return '✈️';
+  }
+  if (category === 'tourism') {
+    if (['attraction','viewpoint','artwork'].includes(type)) return '📍';
+    if (['hotel','motel','hostel'].includes(type)) return '🏨';
+    if (['museum'].includes(type)) return '🏛️';
+    if (['beach'].includes(type)) return '🏖️';
+  }
+  if (category === 'natural') return '🌿';
+  if (category === 'railway' || category === 'aeroway') return '🚉';
+  if (category === 'highway') return '🛣️';
+  if (category === 'place') return '📍';
+  if (category === 'boundary' || category === 'administrative') return '🏙️';
+  return '📌';
+}
+
+function shortAddress(display) {
+  // Keep only the last 2-3 meaningful parts (city, country)
+  const parts = display.split(',').map(s => s.trim()).filter(Boolean);
+  return parts.slice(-3).join(', ');
 }
 
 function toggleStopDetails(stopId) {
@@ -387,6 +551,59 @@ function attachDayEvents(day, di) {
 function attachStopEvents(day, di, stop, si) {
   const el = document.getElementById(`stop-${stop.id}`);
   if (!el) return;
+
+  // — Autocomplete on name input —
+  const nameInput = el.querySelector('.stop-name');
+  const acDropdown = document.getElementById(`ac-${stop.id}`);
+  let acTimer = null;
+  let acFocusIdx = -1;
+
+  if (nameInput && acDropdown) {
+    nameInput.addEventListener('input', () => {
+      clearTimeout(acTimer);
+      const q = nameInput.value.trim();
+      if (!q || q.length < 2) { acDropdown.style.display = 'none'; return; }
+      acDropdown.style.display = 'block';
+      acDropdown.innerHTML = '<div class="autocomplete-searching">🔍 Searching…</div>';
+      acTimer = setTimeout(async () => {
+        const cc = tripCountryCodes(state.activeTrip);
+        const results = await searchPlaces(q, cc);
+        if (!results.length) { acDropdown.style.display = 'none'; return; }
+        acFocusIdx = -1;
+        acDropdown.innerHTML = results.map((r, i) => `
+          <div class="autocomplete-item" data-idx="${i}" data-lat="${r.lat}" data-lng="${r.lng}" data-name="${escHtml(r.name)}" data-display="${escHtml(r.display)}">
+            <span class="autocomplete-item-icon">${placeIcon(r.category, r.type)}</span>
+            <div class="autocomplete-item-text">
+              <div class="autocomplete-item-name">${escHtml(r.name)}</div>
+              <div class="autocomplete-item-sub">${escHtml(shortAddress(r.display))}</div>
+            </div>
+          </div>`).join('');
+        acDropdown.querySelectorAll('.autocomplete-item').forEach(item => {
+          item.addEventListener('mousedown', e => {
+            e.preventDefault();
+            selectPlace(stop, item, nameInput, acDropdown);
+          });
+        });
+      }, 380);
+    });
+
+    nameInput.addEventListener('keydown', e => {
+      const items = acDropdown.querySelectorAll('.autocomplete-item');
+      if (!items.length) return;
+      if (e.key === 'ArrowDown') { e.preventDefault(); acFocusIdx = Math.min(acFocusIdx+1, items.length-1); items.forEach((it,i)=>it.classList.toggle('focused',i===acFocusIdx)); }
+      if (e.key === 'ArrowUp')   { e.preventDefault(); acFocusIdx = Math.max(acFocusIdx-1, 0); items.forEach((it,i)=>it.classList.toggle('focused',i===acFocusIdx)); }
+      if (e.key === 'Enter' && acFocusIdx >= 0) { e.preventDefault(); selectPlace(stop, items[acFocusIdx], nameInput, acDropdown); }
+      if (e.key === 'Escape') acDropdown.style.display = 'none';
+    });
+
+    nameInput.addEventListener('blur', () => { setTimeout(() => { acDropdown.style.display = 'none'; }, 200); });
+  }
+
+  // Init mini-map if stop already has coords
+  if (stop.lat && stop.lng) {
+    setTimeout(() => initMiniMap(stop.id, stop.lat, stop.lng), 50);
+  }
+
   el.querySelectorAll('[data-stop]').forEach(input => {
     const ev = input.tagName === 'SELECT' ? 'change' : 'input';
     input.addEventListener(ev, () => {
@@ -593,11 +810,25 @@ function closeModal() {
   document.getElementById('modal-overlay').classList.add('hidden');
 }
 
+// ─── Country picker state (for new trip modal) ────────────────────────────────
+let pickerSelectedCountries = []; // array of {code, name, flag}
+
 function openNewTripModal() {
+  pickerSelectedCountries = [];
   openModal('New Trip', `
     <div class="form-group">
       <label>Trip Name *</label>
       <input id="new-trip-name" placeholder="e.g. Europe Summer 2025" autofocus />
+    </div>
+    <div class="form-group">
+      <label>Countries / Destinations</label>
+      <div class="country-picker-wrap">
+        <div class="country-tags" id="country-tags" onclick="document.getElementById('country-search').focus()">
+          <input id="country-search" class="country-search-input" placeholder="Search country…" autocomplete="off" />
+        </div>
+        <div class="country-dropdown" id="country-dropdown"></div>
+      </div>
+      <span style="font-size:11px;color:#9ca3af">Add one or more countries — helps filter place searches on the map</span>
     </div>
     <div class="form-row">
       <div class="form-group">
@@ -615,14 +846,18 @@ function openNewTripModal() {
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="createTrip()">Create Trip</button>
+      <button class="btn btn-primary" onclick="createTrip()">Create Trip ✈️</button>
     </div>
   `);
-  setTimeout(() => document.getElementById('new-trip-name')?.focus(), 50);
+
+  setTimeout(() => {
+    document.getElementById('new-trip-name')?.focus();
+    initCountryPicker();
+  }, 50);
 
   // Auto-fill days from date range
   const start = document.getElementById('new-trip-start');
-  const end = document.getElementById('new-trip-end');
+  const end   = document.getElementById('new-trip-end');
   const daysInput = document.getElementById('new-trip-days');
   function updateDays() {
     if (start.value && end.value) {
@@ -632,6 +867,61 @@ function openNewTripModal() {
   }
   start?.addEventListener('change', updateDays);
   end?.addEventListener('change', updateDays);
+}
+
+function initCountryPicker() {
+  const searchInput = document.getElementById('country-search');
+  const dropdown    = document.getElementById('country-dropdown');
+  const tagsEl      = document.getElementById('country-tags');
+  if (!searchInput || !dropdown) return;
+
+  function renderTags() {
+    // Remove old tags (keep input)
+    tagsEl.querySelectorAll('.country-tag').forEach(t => t.remove());
+    pickerSelectedCountries.forEach(c => {
+      const tag = document.createElement('span');
+      tag.className = 'country-tag';
+      tag.innerHTML = `${c.flag} ${c.name} <button class="country-tag-remove" onclick="removePickerCountry('${c.code}')">✕</button>`;
+      tagsEl.insertBefore(tag, searchInput);
+    });
+  }
+
+  function renderDropdown(q) {
+    const matches = COUNTRIES
+      .filter(c => c.name.toLowerCase().includes(q.toLowerCase()) && !pickerSelectedCountries.find(s => s.code === c.code))
+      .slice(0, 8);
+    if (!matches.length) { dropdown.classList.remove('open'); return; }
+    dropdown.innerHTML = matches.map(c =>
+      `<div class="country-option" onclick="addPickerCountry('${c.code}')">
+         <span class="country-flag">${c.flag}</span> ${c.name}
+       </div>`
+    ).join('');
+    dropdown.classList.add('open');
+  }
+
+  searchInput.addEventListener('input', () => renderDropdown(searchInput.value));
+  searchInput.addEventListener('focus', () => { if (searchInput.value) renderDropdown(searchInput.value); });
+  searchInput.addEventListener('blur', () => setTimeout(() => dropdown.classList.remove('open'), 150));
+
+  // expose render for add/remove
+  window._renderPickerTags = renderTags;
+  window._renderPickerDropdown = renderDropdown;
+  renderTags();
+}
+
+function addPickerCountry(code) {
+  const c = getCountry(code);
+  if (!c || pickerSelectedCountries.find(s => s.code === code)) return;
+  pickerSelectedCountries.push(c);
+  const searchInput = document.getElementById('country-search');
+  if (searchInput) searchInput.value = '';
+  window._renderPickerTags?.();
+  window._renderPickerDropdown?.('');
+}
+
+function removePickerCountry(code) {
+  pickerSelectedCountries = pickerSelectedCountries.filter(c => c.code !== code);
+  window._renderPickerTags?.();
 }
 
 function createTrip() {
@@ -650,7 +940,7 @@ function createTrip() {
     return { id: uid(), label: '', date, stops: [] };
   });
 
-  const trip = { id: uid(), name, days };
+  const trip = { id: uid(), name, days, countries: pickerSelectedCountries };
   state.trips.unshift(trip);
   state.activeTrip = trip;
   saveState();

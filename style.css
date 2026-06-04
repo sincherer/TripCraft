@@ -667,6 +667,150 @@ body {
 /* ─── Leaflet overrides ─── */
 .leaflet-routing-container { display: none !important; }
 
+/* ─── Place Autocomplete ─── */
+.stop-name-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+.autocomplete-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1.5px solid #bfdbfe;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.13);
+  z-index: 9000;
+  overflow: hidden;
+  max-height: 240px;
+  overflow-y: auto;
+}
+.autocomplete-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--gray-100);
+  transition: background .1s;
+}
+.autocomplete-item:last-child { border-bottom: none; }
+.autocomplete-item:hover, .autocomplete-item.focused { background: var(--blue-light); }
+.autocomplete-item-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+.autocomplete-item-text { flex: 1; min-width: 0; }
+.autocomplete-item-name { font-size: 13px; font-weight: 600; color: var(--gray-800); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.autocomplete-item-sub  { font-size: 11px; color: var(--gray-400); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.autocomplete-searching {
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--gray-400);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ─── Mini map preview inside itinerary ─── */
+.stop-mini-map {
+  height: 130px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 0 12px 10px;
+  border: 1px solid var(--gray-200);
+  display: none;
+}
+.stop-mini-map.visible { display: block; }
+
+/* ─── Country picker (new trip modal) ─── */
+.country-picker-wrap { position: relative; }
+.country-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-height: 38px;
+  padding: 6px 8px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 8px;
+  background: #fff;
+  cursor: text;
+  transition: border-color .15s;
+}
+.country-tags:focus-within { border-color: var(--blue); }
+.country-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--blue-light);
+  color: var(--blue);
+  border-radius: 20px;
+  padding: 2px 8px 2px 6px;
+}
+.country-tag-remove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--blue);
+  font-size: 13px;
+  line-height: 1;
+  padding: 0 2px;
+  opacity: .7;
+}
+.country-tag-remove:hover { opacity: 1; }
+.country-search-input {
+  border: none !important;
+  outline: none !important;
+  font-size: 13px;
+  min-width: 100px;
+  flex: 1;
+  padding: 2px 4px !important;
+  background: transparent;
+}
+.country-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0; right: 0;
+  background: #fff;
+  border: 1.5px solid #bfdbfe;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.13);
+  z-index: 9001;
+  max-height: 200px;
+  overflow-y: auto;
+  display: none;
+}
+.country-dropdown.open { display: block; }
+.country-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  border-bottom: 1px solid var(--gray-100);
+  transition: background .1s;
+}
+.country-option:last-child { border-bottom: none; }
+.country-option:hover { background: var(--blue-light); }
+.country-flag { font-size: 18px; }
+
+/* Trip countries chips in sidebar / header */
+.trip-countries {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-top: 3px;
+}
+.trip-country-chip {
+  font-size: 11px;
+  background: rgba(255,255,255,.18);
+  color: #fff;
+  border-radius: 10px;
+  padding: 1px 7px;
+}
+
 /* ─── Responsive ─── */
 @media (max-width: 640px) {
   #sidebar { width: 220px; }
