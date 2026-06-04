@@ -182,7 +182,7 @@ async function refreshTravelTimes(trip) {
       // Find badge element and update
       const badge = document.getElementById(`tt-${a.id}-${b.id}`);
       if (badge) {
-        badge.textContent = `🚗 ${label} to next stop`;
+        badge.textContent = `🚗 ${label}`;
         badge.classList.remove('loading');
       }
     }
@@ -248,6 +248,9 @@ function renderDays() {
 }
 
 function renderDayCard(day, di) {
+  const stopCount = day.stops.length;
+  const dayCost = day.stops.reduce((s, st) => s + (parseFloat(st.cost) || 0), 0);
+  const costLabel = dayCost > 0 ? ` · ${formatCurrency(dayCost)}` : '';
   return `
     <div class="day-card" id="day-${day.id}">
       <div class="day-header">
@@ -255,55 +258,115 @@ function renderDayCard(day, di) {
           <span class="day-number">Day ${di + 1}</span>
           <input class="day-label-input" placeholder="e.g. Arrive in Paris" value="${escHtml(day.label || '')}" data-day="${day.id}" data-field="label" />
         </div>
-        <input type="date" class="day-date-input" value="${day.date || ''}" data-day="${day.id}" data-field="date" title="Set day date" />
-        <div class="day-actions">
+        <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+          <span style="font-size:12px;opacity:.75">${stopCount} stop${stopCount !== 1 ? 's' : ''}${costLabel}</span>
+          <input type="date" class="day-date-input" value="${day.date || ''}" data-day="${day.id}" data-field="date" title="Set day date" />
           <button class="day-action-btn danger" onclick="deleteDay('${day.id}')" title="Delete day">🗑</button>
         </div>
       </div>
       <div class="day-body">
         <div class="stops-list" id="stops-${day.id}">
-          ${day.stops.map((stop, si) => renderStopItem(stop, si, day.stops[si - 1])).join('')}
+          ${day.stops.map((stop, si) => renderStopRow(stop, si, day.stops[si - 1])).join('')}
         </div>
-        <div class="add-stop-row">
-          <button class="btn btn-outline btn-sm add-stop-btn" onclick="addStop('${day.id}','attraction')">📍 Attraction</button>
-          <button class="btn btn-outline btn-sm add-stop-btn" onclick="addStop('${day.id}','hotel')">🏨 Hotel</button>
-          <button class="btn btn-outline btn-sm add-stop-btn" onclick="addStop('${day.id}','food')">🍽 Food</button>
-          <button class="btn btn-outline btn-sm add-stop-btn" onclick="addStop('${day.id}','flight')">✈️ Flight</button>
-          <button class="btn btn-outline btn-sm add-stop-btn" onclick="addStop('${day.id}','transport')">🚗 Transport</button>
+        <div class="add-stop-area">
+          <button class="add-stop-trigger" onclick="toggleAddPicker('${day.id}')">
+            <span style="font-size:18px;line-height:1">+</span> Add a stop
+          </button>
+          <div class="add-stop-picker" id="picker-${day.id}">
+            <button class="add-type-btn attraction" onclick="addStop('${day.id}','attraction');closeAddPicker('${day.id}')">📍 Attraction</button>
+            <button class="add-type-btn hotel"      onclick="addStop('${day.id}','hotel');closeAddPicker('${day.id}')">🏨 Hotel</button>
+            <button class="add-type-btn food"       onclick="addStop('${day.id}','food');closeAddPicker('${day.id}')">🍽️ Food</button>
+            <button class="add-type-btn flight"     onclick="addStop('${day.id}','flight');closeAddPicker('${day.id}')">✈️ Flight</button>
+            <button class="add-type-btn transport"  onclick="addStop('${day.id}','transport');closeAddPicker('${day.id}')">🚗 Transport</button>
+            <button class="add-type-btn other"      onclick="addStop('${day.id}','other');closeAddPicker('${day.id}')">📌 Other</button>
+          </div>
         </div>
       </div>
     </div>
   `;
 }
 
-function renderStopItem(stop, si, prevStop) {
-  const showTtBadge = prevStop ? `<span class="travel-time-badge loading" id="tt-${prevStop.id}-${stop.id}">🚗 Calculating...</span>` : '';
+function toggleAddPicker(dayId) {
+  const picker = document.getElementById(`picker-${dayId}`);
+  if (picker) picker.classList.toggle('open');
+}
+function closeAddPicker(dayId) {
+  const picker = document.getElementById(`picker-${dayId}`);
+  if (picker) picker.classList.remove('open');
+}
+
+function renderStopRow(stop, si, prevStop) {
+  // Travel time connector between stops
+  const connector = prevStop ? `
+    <div class="travel-connector">
+      <div class="travel-connector-line"></div>
+      <span class="travel-connector-badge loading" id="tt-${prevStop.id}-${stop.id}">⏱ …</span>
+      <div class="travel-connector-line"></div>
+    </div>` : '';
+
+  const costLabel = stop.cost ? formatCurrency(stop.cost) : '+ Cost';
+  const costClass = stop.cost ? '' : 'empty';
+  const hasDetails = stop.note || stop.cost;
+  const detailsOpen = hasDetails ? 'open' : '';
+
+  const typeChoices = ['attraction','hotel','food','flight','transport','other'].map(t =>
+    `<button class="type-choice-btn ${stop.type === t ? 'selected' : ''}" onclick="changeStopType('${stop.id}','${t}')">${stopTypeIcon(t)} ${t.charAt(0).toUpperCase()+t.slice(1)}</button>`
+  ).join('');
+
   return `
-    <div class="stop-item" id="stop-${stop.id}">
-      <div class="stop-icon ${stop.type}">${stopTypeIcon(stop.type)}</div>
-      <div class="stop-body">
-        <div class="stop-name-row">
-          <input class="stop-name" placeholder="Place name…" value="${escHtml(stop.name || '')}" data-stop="${stop.id}" data-field="name" />
-          <input type="time" class="stop-time-input" value="${stop.time || ''}" data-stop="${stop.id}" data-field="time" title="Time" />
-          <select class="stop-type-select" data-stop="${stop.id}" data-field="type">
-            <option value="attraction" ${stop.type === 'attraction' ? 'selected' : ''}>📍 Attraction</option>
-            <option value="hotel" ${stop.type === 'hotel' ? 'selected' : ''}>🏨 Hotel</option>
-            <option value="food" ${stop.type === 'food' ? 'selected' : ''}>🍽 Food</option>
-            <option value="flight" ${stop.type === 'flight' ? 'selected' : ''}>✈️ Flight</option>
-            <option value="transport" ${stop.type === 'transport' ? 'selected' : ''}>🚗 Transport</option>
-            <option value="other" ${stop.type === 'other' ? 'selected' : ''}>📌 Other</option>
-          </select>
-        </div>
-        <textarea class="stop-note" rows="1" placeholder="Notes (address, booking ref, tips…)" data-stop="${stop.id}" data-field="note">${escHtml(stop.note || '')}</textarea>
-        <div class="stop-cost-row">
-          <span class="stop-cost-label">Cost (USD)</span>
-          <input type="number" class="stop-cost-input" placeholder="0" value="${stop.cost || ''}" min="0" step="0.01" data-stop="${stop.id}" data-field="cost" />
-        </div>
-        ${showTtBadge}
+    ${connector}
+    <div class="timeline-row" id="stop-${stop.id}">
+      <div class="stop-time-col">
+        <input type="time" class="stop-time-input" value="${stop.time || ''}" data-stop="${stop.id}" data-field="time" title="Set time" placeholder="--:--" />
+        <div class="stop-dot ${stop.type}"></div>
+        <div class="stop-vline"></div>
       </div>
-      <button class="stop-delete-btn" onclick="deleteStop('${stop.id}')" title="Remove stop">✕</button>
+      <div class="stop-card ${stop.type}">
+        <div class="stop-card-top">
+          <span class="stop-type-pill ${stop.type}">${stopTypeIcon(stop.type)} ${stop.type.charAt(0).toUpperCase()+stop.type.slice(1)}</span>
+          <input class="stop-name" placeholder="Place name…" value="${escHtml(stop.name || '')}" data-stop="${stop.id}" data-field="name" />
+          <div class="stop-card-actions">
+            <button class="stop-cost-badge ${costClass}" onclick="toggleStopDetails('${stop.id}')" title="Add cost / notes">${costLabel}</button>
+            <button class="stop-expand-btn" onclick="toggleStopDetails('${stop.id}')" title="Expand details" id="expand-${stop.id}">⌄</button>
+            <button class="stop-delete-btn" onclick="deleteStop('${stop.id}')" title="Remove">✕</button>
+          </div>
+        </div>
+        <div class="stop-details ${detailsOpen}" id="details-${stop.id}">
+          <div class="stop-detail-row">
+            <span class="stop-detail-label">Notes</span>
+            <textarea class="stop-note" rows="2" placeholder="Address, booking ref, tips…" data-stop="${stop.id}" data-field="note">${escHtml(stop.note || '')}</textarea>
+          </div>
+          <div class="stop-detail-row">
+            <span class="stop-detail-label">Cost $</span>
+            <input type="number" class="stop-cost-input" placeholder="0.00" value="${stop.cost || ''}" min="0" step="0.01" data-stop="${stop.id}" data-field="cost" />
+          </div>
+          <div class="stop-detail-row" style="align-items:flex-start">
+            <span class="stop-detail-label">Type</span>
+            <div class="stop-type-chooser">${typeChoices}</div>
+          </div>
+        </div>
+      </div>
     </div>
   `;
+}
+
+function toggleStopDetails(stopId) {
+  const details = document.getElementById(`details-${stopId}`);
+  const btn = document.getElementById(`expand-${stopId}`);
+  if (!details) return;
+  const open = details.classList.toggle('open');
+  if (btn) btn.textContent = open ? '⌃' : '⌄';
+  if (open) details.querySelector('textarea')?.focus();
+}
+
+function changeStopType(stopId, newType) {
+  const trip = state.activeTrip;
+  if (!trip) return;
+  for (const day of trip.days) {
+    const stop = day.stops.find(s => s.id === stopId);
+    if (stop) { stop.type = newType; saveState(); break; }
+  }
+  renderDays();
 }
 
 function attachDayEvents(day, di) {
@@ -330,6 +393,12 @@ function attachStopEvents(day, di, stop, si) {
       stop[input.dataset.field] = input.value;
       saveState();
       if (input.dataset.field === 'cost') {
+        // Update cost badge live
+        const badge = document.querySelector(`#stop-${stop.id} .stop-cost-badge`);
+        if (badge) {
+          badge.textContent = stop.cost ? formatCurrency(stop.cost) : '+ Cost';
+          badge.className = `stop-cost-badge ${stop.cost ? '' : 'empty'}`;
+        }
         renderBudget();
         document.getElementById('trip-budget-summary').textContent =
           (() => { const t = state.activeTrip.days.flatMap(d => d.stops).reduce((s, st) => s + (parseFloat(st.cost) || 0), 0); return t > 0 ? `Est. ${formatCurrency(t)}` : ''; })();
