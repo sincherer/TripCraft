@@ -712,15 +712,46 @@ body {
 }
 
 /* ─── Mini map preview inside itinerary ─── */
-.stop-mini-map {
-  height: 130px;
-  border-radius: 8px;
+.mini-map-wrap {
+  border-top: 1px solid var(--gray-100);
   overflow: hidden;
-  margin: 0 12px 10px;
-  border: 1px solid var(--gray-200);
-  display: none;
 }
-.stop-mini-map.visible { display: block; }
+.mini-map-address-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--gray-50);
+  border-bottom: 1px solid var(--gray-100);
+  font-size: 12px;
+}
+.mini-map-pin-icon { font-size: 14px; flex-shrink: 0; }
+.mini-map-addr-text {
+  flex: 1;
+  color: var(--gray-600);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mini-map-change-btn {
+  background: none;
+  border: 1px solid var(--gray-200);
+  color: var(--gray-500);
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 2px 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all .15s;
+}
+.mini-map-change-btn:hover { border-color: var(--blue); color: var(--blue); }
+.stop-mini-map {
+  height: 180px;
+  width: 100%;
+  display: block;
+}
 
 /* ─── Country picker (new trip modal) ─── */
 .country-picker-wrap { position: relative; }

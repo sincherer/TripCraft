@@ -177,33 +177,57 @@ let mapInstance = null;
 let routeControl = null;
 let mapMarkers = [];
 
-const TILE_URL = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
-const TILE_ATTR = '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/">CARTO</a>';
+// Carto Voyager — English labels, no API key, must use subdomains abcd
+const TILE_URL  = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png';
+const TILE_OPTS = { subdomains: 'abcd', maxZoom: 20, attribution: '© <a href="https://www.openstreetmap.org/copyright">OSM</a> © <a href="https://carto.com/">CARTO</a>' };
+
+function makeTileLayer() { return L.tileLayer(TILE_URL, TILE_OPTS); }
 
 function initMap() {
   if (mapInstance) return;
   mapInstance = L.map('map').setView([20, 0], 2);
-  L.tileLayer(TILE_URL, { attribution: TILE_ATTR, maxZoom: 19 }).addTo(mapInstance);
+  makeTileLayer().addTo(mapInstance);
 }
 
 // Mini-maps keyed by stop id
 const miniMaps = {};
 
-function initMiniMap(stopId, lat, lng) {
+function initMiniMap(stopId, lat, lng, address) {
   const container = document.getElementById(`mini-map-${stopId}`);
   if (!container) return;
-  container.classList.add('visible');
+
+  // Update address label if present
+  const addrEl = document.getElementById(`mini-addr-${stopId}`);
+  if (addrEl && address) addrEl.textContent = address;
+
+  // Show the wrapper
+  const wrapper = document.getElementById(`mini-wrap-${stopId}`);
+  if (wrapper) wrapper.style.display = 'block';
 
   if (miniMaps[stopId]) {
-    miniMaps[stopId].setView([lat, lng], 14);
+    // Map already exists — just update position
+    miniMaps[stopId].setView([lat, lng], 15);
     miniMaps[stopId]._pin?.setLatLng([lat, lng]);
+    miniMaps[stopId].invalidateSize();
     return;
   }
-  const m = L.map(container, { zoomControl: false, attributionControl: false, dragging: false, scrollWheelZoom: false });
-  L.tileLayer(TILE_URL, { maxZoom: 19 }).addTo(m);
-  m.setView([lat, lng], 14);
-  const pin = L.marker([lat, lng]).addTo(m);
-  m._pin = pin;
+
+  // Create new mini-map — must be visible first so Leaflet can measure size
+  const m = L.map(container, {
+    zoomControl: false,
+    attributionControl: false,
+    dragging: true,
+    scrollWheelZoom: false,
+    doubleClickZoom: false,
+  });
+  makeTileLayer().addTo(m);
+  // Delay setView until next frame so container is painted
+  requestAnimationFrame(() => {
+    m.invalidateSize();
+    m.setView([lat, lng], 15);
+    const pin = L.marker([lat, lng]).addTo(m);
+    m._pin = pin;
+  });
   miniMaps[stopId] = m;
 }
 
@@ -421,7 +445,7 @@ function renderStopRow(stop, si, prevStop) {
     `<button class="type-choice-btn ${stop.type === t ? 'selected' : ''}" onclick="changeStopType('${stop.id}','${t}')">${stopTypeIcon(t)} ${t.charAt(0).toUpperCase()+t.slice(1)}</button>`
   ).join('');
 
-  const hasMiniMap = stop.lat && stop.lng;
+  const hasMiniMap = !!(stop.lat && stop.lng);
 
   return `
     ${connector}
@@ -432,6 +456,8 @@ function renderStopRow(stop, si, prevStop) {
         <div class="stop-vline"></div>
       </div>
       <div class="stop-card ${stop.type}">
+
+        <!-- Top row: type pill + search input + actions -->
         <div class="stop-card-top">
           <span class="stop-type-pill ${stop.type}">${stopTypeIcon(stop.type)} ${stop.type.charAt(0).toUpperCase()+stop.type.slice(1)}</span>
           <div class="stop-name-wrap">
@@ -444,7 +470,18 @@ function renderStopRow(stop, si, prevStop) {
             <button class="stop-delete-btn" onclick="deleteStop('${stop.id}')" title="Remove">✕</button>
           </div>
         </div>
-        <div id="mini-map-${stop.id}" class="stop-mini-map ${hasMiniMap ? 'visible' : ''}"></div>
+
+        <!-- Mini map preview (shown after place is picked) -->
+        <div id="mini-wrap-${stop.id}" class="mini-map-wrap" style="display:${hasMiniMap ? 'block' : 'none'}">
+          <div class="mini-map-address-bar">
+            <span class="mini-map-pin-icon">📍</span>
+            <span class="mini-map-addr-text" id="mini-addr-${stop.id}">${escHtml(stop.address || stop.name || '')}</span>
+            <button class="mini-map-change-btn" onclick="clearStopLocation('${stop.id}')">✎ Change</button>
+          </div>
+          <div id="mini-map-${stop.id}" class="stop-mini-map"></div>
+        </div>
+
+        <!-- Expandable details -->
         <div class="stop-details ${detailsOpen}" id="details-${stop.id}">
           <div class="stop-detail-row">
             <span class="stop-detail-label">Notes</span>
@@ -459,6 +496,7 @@ function renderStopRow(stop, si, prevStop) {
             <div class="stop-type-chooser">${typeChoices}</div>
           </div>
         </div>
+
       </div>
     </div>
   `;
@@ -466,23 +504,42 @@ function renderStopRow(stop, si, prevStop) {
 
 // ─── Place helper functions ───────────────────────────────────────────────────
 function selectPlace(stop, item, nameInput, acDropdown) {
-  const name = item.dataset.name;
-  const lat  = parseFloat(item.dataset.lat);
-  const lng  = parseFloat(item.dataset.lng);
+  const name    = item.dataset.name;
+  const address = item.dataset.display;
+  const lat     = parseFloat(item.dataset.lat);
+  const lng     = parseFloat(item.dataset.lng);
   nameInput.value = name;
-  stop.name = name;
-  stop.lat  = lat;
-  stop.lng  = lng;
+  stop.name    = name;
+  stop.address = shortAddress(address);
+  stop.lat     = lat;
+  stop.lng     = lng;
   saveState();
   acDropdown.style.display = 'none';
-  // Show mini map
-  const miniMapEl = document.getElementById(`mini-map-${stop.id}`);
-  if (miniMapEl) {
-    miniMapEl.classList.add('visible');
-    setTimeout(() => initMiniMap(stop.id, lat, lng), 60);
-  }
   // Cache geocode result
   geocodeCache[name + '|'] = { lat, lng };
+  // Show and render mini-map
+  setTimeout(() => initMiniMap(stop.id, lat, lng, stop.address), 80);
+}
+
+function clearStopLocation(stopId) {
+  const trip = state.activeTrip;
+  if (!trip) return;
+  for (const day of trip.days) {
+    const stop = day.stops.find(s => s.id === stopId);
+    if (stop) {
+      stop.lat = null; stop.lng = null; stop.address = '';
+      saveState();
+      break;
+    }
+  }
+  // Hide the mini-map wrapper
+  const wrapper = document.getElementById(`mini-wrap-${stopId}`);
+  if (wrapper) wrapper.style.display = 'none';
+  // Destroy leaflet instance so it can be re-created fresh
+  if (miniMaps[stopId]) { miniMaps[stopId].remove(); delete miniMaps[stopId]; }
+  // Focus the name input so user can re-type
+  const nameInput = document.querySelector(`#stop-${stopId} .stop-name`);
+  if (nameInput) { nameInput.value = ''; nameInput.focus(); }
 }
 
 function placeIcon(category, type) {
@@ -601,7 +658,7 @@ function attachStopEvents(day, di, stop, si) {
 
   // Init mini-map if stop already has coords
   if (stop.lat && stop.lng) {
-    setTimeout(() => initMiniMap(stop.id, stop.lat, stop.lng), 50);
+    setTimeout(() => initMiniMap(stop.id, stop.lat, stop.lng, stop.address || stop.name), 80);
   }
 
   el.querySelectorAll('[data-stop]').forEach(input => {
